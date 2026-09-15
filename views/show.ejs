@@ -1,0 +1,33 @@
+<%- include('partials/header', { title: post.title }) %>
+
+<article class="post-full">
+  <a class="back-link" href="/posts">← All posts</a>
+
+  <span class="badge badge-<%= post.category.toLowerCase() %>">
+    <%= post.category %>
+  </span>
+
+  <h1><%= post.title %></h1>
+
+  <p class="meta">
+    By <strong><%= post.author %></strong>
+    · <time datetime="<%= post.createdAt.toISOString() %>">
+        <%= formatDateTime(post.createdAt) %>
+      </time>
+    <% if (post.updatedAt > post.createdAt) { %>
+      · edited <%= formatDateTime(post.updatedAt) %>
+    <% } %>
+  </p>
+
+  <div class="post-body"><%= post.content %></div>
+
+  <div class="post-actions">
+    <a class="btn btn-primary" href="/posts/<%= post.id %>/edit">Edit post</a>
+    <form action="/posts/<%= post.id %>?_method=DELETE" method="POST"
+          onsubmit="return confirm('Delete this post? This cannot be undone.');">
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
+</article>
+
+<%- include('partials/footer') %>

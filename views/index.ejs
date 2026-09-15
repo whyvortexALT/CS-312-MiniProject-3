@@ -1,0 +1,91 @@
+<%- include('partials/header', { title: 'Home' }) %>
+
+<div class="home-layout">
+
+  <!-- form for creating post -->
+  <aside class="create-panel">
+    <h2 class="panel-title">Write a new post</h2>
+    <p class="muted small">
+      Write anything!
+    </p>
+
+    <form class="post-form" action="/posts" method="POST">
+      <%- include('partials/form-fields', { post: formData, errors: errors }) %>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Publish</button>
+      </div>
+    </form>
+  </aside>
+
+  <!-- list of the posts -->
+  <section class="feed">
+    <header class="page-head">
+      <h1>Latest posts</h1>
+      <p class="muted">
+        <%= posts.length %> <%= posts.length === 1 ? 'post' : 'posts' %>
+        <% if (activeCategory) { %> in <strong><%= activeCategory %></strong><% } %>
+      </p>
+    </header>
+
+    <!-- filters -->
+    <nav class="filter-chips" aria-label="Filter by category">
+      <a class="chip <%= activeCategory ? '' : 'chip-active' %>" href="/posts">All</a>
+      <% categories.forEach(function (cat) { %>
+        <a class="chip <%= activeCategory === cat ? 'chip-active' : '' %>"
+           href="/posts?category=<%= encodeURIComponent(cat) %>">
+          <%= cat %>
+        </a>
+      <% }); %>
+    </nav>
+
+    <% if (posts.length === 0) { %>
+      <div class="empty-state">
+        <h2>Nothing here.</h2>
+        <p class="muted">So make a post!</p>
+      </div>
+    <% } else { %>
+      <div class="post-list">
+        <% posts.forEach(function (post) { %>
+          <article class="post-card">
+            <div class="card-top">
+              <span class="badge badge-<%= post.category.toLowerCase() %>">
+                <%= post.category %>
+              </span>
+              <span class="meta-inline">
+                <time datetime="<%= post.createdAt.toISOString() %>">
+                  <%= formatDateTime(post.createdAt) %>
+                </time>
+              </span>
+            </div>
+
+            <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+
+            <p class="meta">
+              By <strong><%= post.author %></strong>
+              <% if (post.updatedAt > post.createdAt) { %>
+                · edited <%= formatDate(post.updatedAt) %>
+              <% } %>
+            </p>
+
+            <p class="excerpt">
+              <%= post.content.replace(/\s+/g, ' ').slice(0, 160) %><%=
+                post.content.length > 160 ? '…' : ''
+              %>
+            </p>
+
+            <div class="card-actions">
+              <a class="btn btn-ghost btn-sm" href="/posts/<%= post.id %>">Read</a>
+              <a class="btn btn-ghost btn-sm" href="/posts/<%= post.id %>/edit">Edit</a>
+              <form action="/posts/<%= post.id %>?_method=DELETE" method="POST"
+                    onsubmit="return confirm('Delete this post? This cannot be undone.');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
+</div>
+
+<%- include('partials/footer') %>
