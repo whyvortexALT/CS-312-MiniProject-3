@@ -2,22 +2,31 @@
 
 <div class="home-layout">
 
-  <!-- form for creating post -->
+  <!-- ===== Create panel ===== -->
   <aside class="create-panel">
-    <h2 class="panel-title">Write a new post</h2>
-    <p class="muted small">
-      Write anything!
-    </p>
+    <% if (currentUser) { %>
+      <h2 class="panel-title">Write a new post</h2>
+      <p class="muted small">Posting as <strong><%= currentUser.name %></strong>.</p>
 
-    <form class="post-form" action="/posts" method="POST">
-      <%- include('partials/form-fields', { post: formData, errors: errors }) %>
+      <form class="post-form" action="/posts" method="POST">
+        <%- include('partials/form-fields', { post: formData, errors: errors }) %>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Publish</button>
+        </div>
+      </form>
+    <% } else { %>
+      <h2 class="panel-title">Join the conversation</h2>
+      <p class="muted small">
+        Sign in to write, edit, and delete your own posts.
+      </p>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Publish</button>
+        <a class="btn btn-primary" href="/auth/signin">Sign in</a>
+        <a class="btn" href="/auth/signup">Sign up</a>
       </div>
-    </form>
+    <% } %>
   </aside>
 
-  <!-- list of the posts -->
+  <!-- ===== Feed ===== -->
   <section class="feed">
     <header class="page-head">
       <h1>Latest posts</h1>
@@ -27,59 +36,61 @@
       </p>
     </header>
 
-    <!-- filters -->
     <nav class="filter-chips" aria-label="Filter by category">
       <a class="chip <%= activeCategory ? '' : 'chip-active' %>" href="/posts">All</a>
       <% categories.forEach(function (cat) { %>
         <a class="chip <%= activeCategory === cat ? 'chip-active' : '' %>"
-           href="/posts?category=<%= encodeURIComponent(cat) %>">
-          <%= cat %>
-        </a>
+           href="/posts?category=<%= encodeURIComponent(cat) %>"><%= cat %></a>
       <% }); %>
     </nav>
 
     <% if (posts.length === 0) { %>
       <div class="empty-state">
-        <h2>Nothing here.</h2>
-        <p class="muted">So make a post!</p>
+        <h2>Nothing here yet</h2>
+        <p class="muted">Be the first to publish something.</p>
       </div>
     <% } else { %>
       <div class="post-list">
         <% posts.forEach(function (post) { %>
+          <% const isOwner = currentUser && currentUser.user_id === post.creator_user_id; %>
           <article class="post-card">
             <div class="card-top">
               <span class="badge badge-<%= post.category.toLowerCase() %>">
                 <%= post.category %>
               </span>
               <span class="meta-inline">
-                <time datetime="<%= post.createdAt.toISOString() %>">
-                  <%= formatDateTime(post.createdAt) %>
+                <time datetime="<%= new Date(post.date_created).toISOString() %>">
+                  <%= formatDateTime(post.date_created) %>
                 </time>
               </span>
             </div>
 
-            <h2><a href="/posts/<%= post.id %>"><%= post.title %></a></h2>
+            <h2><a href="/posts/<%= post.blog_id %>"><%= post.title %></a></h2>
 
             <p class="meta">
-              By <strong><%= post.author %></strong>
-              <% if (post.updatedAt > post.createdAt) { %>
-                · edited <%= formatDate(post.updatedAt) %>
+              By <strong><%= post.creator_name %></strong>
+              <% if (new Date(post.date_updated) > new Date(post.date_created)) { %>
+                · edited <%= formatDate(post.date_updated) %>
               <% } %>
             </p>
 
             <p class="excerpt">
-              <%= post.content.replace(/\s+/g, ' ').slice(0, 160) %><%=
-                post.content.length > 160 ? '…' : ''
+              <%= post.body.replace(/\s+/g, ' ').slice(0, 160) %><%=
+                post.body.length > 160 ? '…' : ''
               %>
             </p>
 
             <div class="card-actions">
-              <a class="btn btn-ghost btn-sm" href="/posts/<%= post.id %>">Read</a>
-              <a class="btn btn-ghost btn-sm" href="/posts/<%= post.id %>/edit">Edit</a>
-              <form action="/posts/<%= post.id %>?_method=DELETE" method="POST"
-                    onsubmit="return confirm('Delete this post? This cannot be undone.');">
-                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-              </form>
+              <a class="btn btn-ghost btn-sm" href="/posts/<%= post.blog_id %>">Read</a>
+
+              <% if (isOwner) { %>
+                <a class="btn btn-ghost btn-sm"
+                   href="/posts/<%= post.blog_id %>/edit">Edit</a>
+                <form action="/posts/<%= post.blog_id %>?_method=DELETE" method="POST"
+                      onsubmit="return confirm('Delete this post? This cannot be undone.');">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              <% } %>
             </div>
           </article>
         <% }); %>

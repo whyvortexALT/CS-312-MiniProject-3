@@ -1,5 +1,7 @@
 <%- include('partials/header', { title: post.title }) %>
 
+<% const isOwner = currentUser && currentUser.user_id === post.creator_user_id; %>
+
 <article class="post-full">
   <a class="back-link" href="/posts">← All posts</a>
 
@@ -10,24 +12,26 @@
   <h1><%= post.title %></h1>
 
   <p class="meta">
-    By <strong><%= post.author %></strong>
-    · <time datetime="<%= post.createdAt.toISOString() %>">
-        <%= formatDateTime(post.createdAt) %>
+    By <strong><%= post.creator_name %></strong>
+    · <time datetime="<%= new Date(post.date_created).toISOString() %>">
+        <%= formatDateTime(post.date_created) %>
       </time>
-    <% if (post.updatedAt > post.createdAt) { %>
-      · edited <%= formatDateTime(post.updatedAt) %>
+    <% if (new Date(post.date_updated) > new Date(post.date_created)) { %>
+      · edited <%= formatDateTime(post.date_updated) %>
     <% } %>
   </p>
 
-  <div class="post-body"><%= post.content %></div>
+  <div class="post-body"><%= post.body %></div>
 
-  <div class="post-actions">
-    <a class="btn btn-primary" href="/posts/<%= post.id %>/edit">Edit post</a>
-    <form action="/posts/<%= post.id %>?_method=DELETE" method="POST"
-          onsubmit="return confirm('Delete this post? This cannot be undone.');">
-      <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
-  </div>
+  <% if (isOwner) { %>
+    <div class="post-actions">
+      <a class="btn btn-primary" href="/posts/<%= post.blog_id %>/edit">Edit post</a>
+      <form action="/posts/<%= post.blog_id %>?_method=DELETE" method="POST"
+            onsubmit="return confirm('Delete this post? This cannot be undone.');">
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  <% } %>
 </article>
 
 <%- include('partials/footer') %>

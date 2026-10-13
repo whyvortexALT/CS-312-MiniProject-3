@@ -10,9 +10,22 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="/posts"> <%= siteName %></a>
+
       <nav class="nav">
         <a href="/posts">Home</a>
-        <a class="btn btn-primary btn-sm" href="/posts">New post</a>
+
+        // changed for users
+        <% if (currentUser) { %>
+          <span class="muted small signed-in-as">
+            Signed in as <strong><%= currentUser.name %></strong>
+          </span>
+          <form action="/auth/signout" method="POST" class="inline-form">
+            <button type="submit" class="btn btn-sm">Sign out</button>
+          </form>
+        <% } else { %>
+          <a href="/auth/signin">Sign in</a>
+          <a class="btn btn-primary btn-sm" href="/auth/signup">Sign up</a>
+        <% } %>
       </nav>
     </div>
   </header>

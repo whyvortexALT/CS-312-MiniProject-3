@@ -1,0 +1,38 @@
+<%- include('partials/header', { title: 'Sign in' }) %>
+
+<div class="auth-card">
+  <h1>Sign in</h1>
+  <p class="muted">Welcome back. Sign in to write and manage your posts.</p>
+
+  <% if (registered) { %>
+    <div class="alert alert-success">Account created. You can sign in now.</div>
+  <% } %>
+
+  <% if (errors.length) { %>
+    <ul class="alert alert-error">
+      <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+    </ul>
+  <% } %>
+
+  <form class="post-form" action="/auth/signin" method="POST">
+    <input type="hidden" name="next" value="<%= next %>" />
+
+    <div class="field">
+      <label for="user_id">User ID</label>
+      <input type="text" id="user_id" name="user_id"
+             value="<%= form.user_id || '' %>" required autofocus />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Sign in</button>
+      <a class="btn" href="/auth/signup">Create account</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

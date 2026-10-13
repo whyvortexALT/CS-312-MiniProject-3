@@ -1,14 +1,16 @@
 <%- include('partials/header', { title: 'Edit post' }) %>
 
-<h1>Edit post</h1>
-<p class="muted">Update the fields below and save your changes.</p>
+<div class="auth-card">
+  <h1>Edit post</h1>
+  <p class="muted">Update the fields below and save your changes.</p>
 
-<form class="post-form" action="/posts/<%= post.id %>?_method=PUT" method="POST">
-  <%- include('partials/form-fields', { post: post, errors: errors }) %>
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary">Save changes</button>
-    <a class="btn" href="/posts/<%= post.id %>">Cancel</a>
-  </div>
-</form>
+  <form class="post-form" action="/posts/<%= post.blog_id %>?_method=PUT" method="POST">
+    <%- include('partials/form-fields', { post: post, errors: errors }) %>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a class="btn" href="/posts/<%= post.blog_id %>">Cancel</a>
+    </div>
+  </form>
+</div>
 
 <%- include('partials/footer') %>

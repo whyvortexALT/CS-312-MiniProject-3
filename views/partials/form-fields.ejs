@@ -1,8 +1,6 @@
 <% if (errors && errors.length) { %>
   <ul class="alert alert-error" role="alert">
-    <% errors.forEach(function (error) { %>
-      <li><%= error %></li>
-    <% }); %>
+    <% errors.forEach(function (error) { %><li><%= error %></li><% }); %>
   </ul>
 <% } %>
 
@@ -11,15 +9,7 @@
   <input type="text" id="title" name="title"
          value="<%= post.title %>"
          placeholder="Give your post a title"
-         maxlength="120" required />
-</div>
-
-<div class="field">
-  <label for="author">Author</label>
-  <input type="text" id="author" name="author"
-         value="<%= post.author %>"
-         placeholder="Your name"
-         maxlength="60" required />
+         maxlength="255" required />
 </div>
 
 <div class="field">
@@ -35,7 +25,7 @@
 </div>
 
 <div class="field">
-  <label for="content">Content</label>
-  <textarea id="content" name="content" rows="10"
-            placeholder="Write something worth reading…" required><%= post.content %></textarea>
+  <label for="body">Content</label>
+  <textarea id="body" name="body" rows="10"
+            placeholder="Write something worth reading…" required><%= post.body %></textarea>
 </div>

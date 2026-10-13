@@ -317,3 +317,24 @@ textarea { min-height: 160px; resize: vertical; }
 }
 
 .site-footer p { margin: 0; }
+
+/* authentication pages */
+.auth-card {
+  max-width: 460px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+.auth-card h1 { margin-top: 0; }
+
+.inline-form { display: inline; margin: 0; }
+
+.signed-in-as { margin-right: 0.25rem; }
+
+.alert-success {
+  background: #e6f4ea;
+  border: 1px solid #b7dfc2;
+  color: #1e6b3a;
+}

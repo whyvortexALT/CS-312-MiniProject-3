@@ -1,0 +1,48 @@
+<%- include('partials/header', { title: 'Sign up' }) %>
+
+<div class="auth-card">
+  <h1>Create an account</h1>
+  <p class="muted">Pick a user ID and password.</p>
+
+  <% if (errors.length) { %>
+    <ul class="alert alert-error">
+      <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+    </ul>
+  <% } %>
+
+  <form class="post-form" action="/auth/signup" method="POST">
+    <div class="field">
+      <label for="user_id">User ID</label>
+      <input type="text" id="user_id" name="user_id"
+             value="<%= form.user_id || '' %>"
+             placeholder="e.g. alice (3–30 letters, numbers, underscore)"
+             required autofocus />
+    </div>
+
+    <div class="field">
+      <label for="name">Display name</label>
+      <input type="text" id="name" name="name"
+             value="<%= form.name || '' %>"
+             placeholder="How your name appears on posts"
+             maxlength="255" required />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"
+             placeholder="At least 6 characters" required />
+    </div>
+
+    <div class="field">
+      <label for="confirm">Confirm password</label>
+      <input type="password" id="confirm" name="confirm" required />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Create account</button>
+      <a class="btn" href="/auth/signin">I already have an account</a>
+    </div>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
